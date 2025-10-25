@@ -1,0 +1,35 @@
+#include <iostream>
+#include <string>
+using namespace std;
+template<typename T>
+struct Node{T v; Node* next; Node(T x):v(x),next(nullptr){}};
+template<typename T>
+Node<T>* build(T a[], int n){ Node<T>* h=nullptr; Node<T>* t=nullptr; for(int i=0;i<n;i++){ Node<T>* p=new Node<T>(a[i]); if(!h) h=t=p; else { t->next=p; t=p; } } return h; }
+template<typename T>
+void print(Node<T>* h){ Node<T>* p=h; while(p){ cout<<p->v; if(p->next) cout<<" "; p=p->next; } cout<<"\n"; }
+template<typename T>
+bool isPalindrome(Node<T>* head){
+    if(!head||!head->next) return true;
+    Node<T>* slow=head; Node<T>* fast=head;
+    while(fast->next && fast->next->next){ slow=slow->next; fast=fast->next->next; }
+    Node<T>* prev=nullptr; Node<T>* cur=slow->next;
+    while(cur){ Node<T>* nxt=cur->next; cur->next=prev; prev=cur; cur=nxt; }
+    Node<T>* p1=head; Node<T>* p2=prev;
+    bool ok=true;
+    while(p2){ if(p1->v!=p2->v){ ok=false; break; } p1=p1->next; p2=p2->next; }
+    cur=prev; prev=nullptr;
+    while(cur){ Node<T>* nxt=cur->next; cur->next=prev; prev=cur; cur=nxt; }
+    slow->next=prev;
+    return ok;
+}
+int main(){
+    int a1[]={1,0,2,0,1};
+    Node<int>* h1=build<int>(a1,5);
+    cout<<(isPalindrome<int>(h1)?"Linked List is a Palindrome":"Linked List is not a Palindrome")<<"\n";
+    string s="BORROWROB";
+    string arr[11];
+    for(int i=0;i<11;i++){ arr[i]=string(1,s[i]); }
+    Node<string>* h2=build<string>(arr,11);
+    cout<<(isPalindrome<string>(h2)?"Linked List is a Palindrome":"Linked List is not a Palindrome")<<"\n";
+    return 0;
+}
