@@ -1,0 +1,38 @@
+#include <iostream>
+using namespace std;
+struct Node{int data; Node* next; Node(int v):data(v),next(nullptr){}};
+void printList(Node* h){Node* p=h; while(p){cout<<p->data; if(p->next) cout<<" "; p=p->next;} cout<<"\n";}
+int main(){
+    int arr[5]={3,1,2,5,8};
+    for(int i=0;i<5;i++) cout<<arr[i]<<(i<4?" ":"\n");
+    Node* head=nullptr;
+    Node* tail=nullptr;
+    for(int i=0;i<5;i++){
+        Node* n=new Node(arr[i]);
+        if(!head){head=tail=n;} else {tail->next=n; tail=n;}
+    }
+    Node* n9=new Node(9);
+    tail->next=n9; tail=n9;
+    Node* n11=new Node(11);
+    int pos=3;
+    if(pos==1){ n11->next=head; head=n11; if(!tail) tail=n11;}
+    else{
+        Node* cur=head; int i=1;
+        while(cur && i<pos-1){cur=cur->next;i++;}
+        if(cur){ n11->next=cur->next; cur->next=n11; if(n11->next==nullptr) tail=n11;}
+    }
+    Node* n4=new Node(4);
+    n4->next=head; head=n4;
+    int toDeleteVals[3]={1,2,5};
+    for(int k=0;k<3;k++){
+        int val=toDeleteVals[k];
+        Node* prev=nullptr; Node* cur=head;
+        while(cur && cur->data!=val){prev=cur; cur=cur->next;}
+        if(cur){
+            if(!prev){ head=cur->next; delete cur; }
+            else { prev->next=cur->next; if(prev->next==nullptr) ; delete cur; }
+        }
+    }
+    printList(head);
+    return 0;
+}
