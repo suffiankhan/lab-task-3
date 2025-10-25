@@ -1,0 +1,21 @@
+#include <iostream>
+using namespace std;
+struct DNode{int v; DNode* prev; DNode* next; DNode(int x):v(x),prev(nullptr),next(nullptr){}};
+struct DList{DNode* head; DNode* tail; DList():head(nullptr),tail(nullptr){} 
+    void append(int x){ DNode* n=new DNode(x); if(!head){ head=tail=n; } else { tail->next=n; n->prev=tail; tail=n; } }
+    void print(){ DNode* p=head; while(p){ cout<<p->v; if(p->next) cout<<" "; p=p->next; } cout<<"\n"; }
+};
+void concatenate(DList &L, DList &M){
+    if(!L.head){ L.head=M.head; L.tail=M.tail; return; }
+    if(!M.head) return;
+    L.tail->next=M.head;
+    M.head->prev=L.tail;
+    L.tail=M.tail;
+}
+int main(){
+    DList L; L.append(1); L.append(2); L.append(3);
+    DList M; M.append(4); M.append(5);
+    concatenate(L,M);
+    L.print();
+    return 0;
+}
