@@ -1,0 +1,25 @@
+#include <iostream>
+using namespace std;
+struct Node{int v; Node* next; Node(int x):v(x),next(nullptr){}};
+Node* build(int a[], int n){Node* h=nullptr; Node* t=nullptr; for(int i=0;i<n;i++){ Node* p=new Node(a[i]); if(!h) h=t=p; else { t->next=p; t=p; }} return h;}
+void print(Node* h){ Node* p=h; while(p){ cout<<p->v; if(p->next) cout<<" "; p=p->next; } cout<<"\n";}
+Node* deleteValue(Node* head,int val){
+    Node* cur=head; Node* prev=nullptr;
+    while(cur && cur->v!=val){ prev=cur; cur=cur->next; }
+    if(!cur){ cout<<"Value not present in the list\n"; return head; }
+    if(!prev){ head=cur->next; delete cur; return head; }
+    prev->next=cur->next;
+    delete cur;
+    return head;
+}
+int main(){
+    int a[]={10,20,30,40,50};
+    Node* h=build(a,5);
+    print(h);
+    int val;
+    cout<<"Enter value to delete: ";
+    cin>>val;
+    h=deleteValue(h,val);
+    print(h);
+    return 0;
+}
