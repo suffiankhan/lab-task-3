@@ -1,0 +1,26 @@
+#include <iostream>
+using namespace std;
+struct Node{int v; Node* next; Node(int x):v(x),next(nullptr){}};
+struct CircularList{Node* tail; CircularList():tail(nullptr){} 
+    void insertEnd(int x){ Node* n=new Node(x); if(!tail){ tail=n; tail->next=tail; } else { n->next=tail->next; tail->next=n; tail=n; } }
+    void insertBegin(int x){ Node* n=new Node(x); if(!tail){ tail=n; tail->next=tail; } else { n->next=tail->next; tail->next=n; } }
+    void insertAt(int pos,int x){ if(pos<=1){ insertBegin(x); return; } if(!tail){ insertEnd(x); return; } Node* cur=tail->next; int i=1; while(cur!=tail && i<pos-1){ cur=cur->next; i++; } Node* n=new Node(x); n->next=cur->next; cur->next=n; if(cur==tail) tail=n; }
+    void deleteValue(int x){ if(!tail) return; Node* cur=tail->next; Node* prev=tail; do{ if(cur->v==x){ if(cur==prev){ delete cur; tail=nullptr; return; } prev->next=cur->next; if(cur==tail) tail=prev; delete cur; return; } prev=cur; cur=cur->next; } while(cur!=tail->next); }
+    void print(){ if(!tail){ cout<<"Empty\n"; return; } Node* cur=tail->next; do{ cout<<cur->v; cur=cur->next; if(cur!=tail->next) cout<<" "; } while(cur!=tail->next); cout<<"\n"; }
+};
+int main(){
+    CircularList c;
+    c.insertEnd(10);
+    c.insertEnd(20);
+    c.insertEnd(30);
+    c.print();
+    c.insertBegin(5);
+    c.print();
+    c.insertAt(3,15);
+    c.print();
+    c.deleteValue(20);
+    c.print();
+    c.deleteValue(5);
+    c.print();
+    return 0;
+}
