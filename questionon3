@@ -1,0 +1,69 @@
+#include <iostream>
+#include <string>
+using namespace std;
+struct PNode{string name; PNode* next; PNode(string s):name(s),next(nullptr){}};
+struct FNode{string flight; PNode* passengers; FNode* next; FNode(string f):flight(f),passengers(nullptr),next(nullptr){}};
+FNode* flights=nullptr;
+FNode* findFlight(const string& f){
+    FNode* cur=flights;
+    while(cur){ if(cur->flight==f) return cur; cur=cur->next;}
+    return nullptr;
+}
+void addFlight(const string& f){
+    if(findFlight(f)) return;
+    FNode* n=new FNode(f);
+    if(!flights) flights=n; else {FNode* t=flights; while(t->next) t=t->next; t->next=n;}
+}
+void reserveTicket(const string& f,const string& name){
+    FNode* fl=findFlight(f);
+    if(!fl){ addFlight(f); fl=findFlight(f);}
+    PNode* prev=nullptr; PNode* cur=fl->passengers;
+    while(cur && cur->name < name){ prev=cur; cur=cur->next; }
+    PNode* nn=new PNode(name);
+    if(!prev){ nn->next=fl->passengers; fl->passengers=nn; }
+    else { nn->next=prev->next; prev->next=nn; }
+    cout<<"Reserved "<<name<<" on "<<f<<"\n";
+}
+void cancelTicket(const string& f,const string& name){
+    FNode* fl=findFlight(f);
+    if(!fl){ cout<<"Flight not found\n"; return;}
+    PNode* prev=nullptr; PNode* cur=fl->passengers;
+    while(cur && cur->name!=name){ prev=cur; cur=cur->next; }
+    if(!cur) { cout<<"Reservation not found\n"; return;}
+    if(!prev) fl->passengers=cur->next; else prev->next=cur->next;
+    delete cur;
+    cout<<"Cancelled "<<name<<" on "<<f<<"\n";
+}
+void checkReservation(const string& f,const string& name){
+    FNode* fl=findFlight(f);
+    if(!fl){ cout<<"Flight not found\n"; return;}
+    PNode* cur=fl->passengers;
+    while(cur){ if(cur->name==name){ cout<<"Ticket reserved for "<<name<<"\n"; return;} cur=cur->next;}
+    cout<<"No reservation for "<<name<<"\n";
+}
+
+void displayPassengers(const string& f){
+    FNode* fl=findFlight(f);
+    if(!fl){ cout<<"Flight not found\n"; return;}
+    PNode* cur=fl->passengers;
+    if(!cur){ cout<<"No passengers\n"; return;}
+    while(cur){ cout<<cur->name; if(cur->next) cout<<" "; cur=cur->next;} cout<<"\n";
+}
+void displayFlights(){
+    FNode* cur=flights;
+    while(cur){ cout<<cur->flight; if(cur->next) cout<<" "; cur=cur->next;} cout<<"\n";
+}
+int main(){
+    while(true){
+        cout<<"Menu:\n1 Add Flight\n2 Reserve Ticket\n3 Cancel Reservation\n4 Check Reservation\n5 Display Passengers\n6 Display Flights\n7 Exit\nChoose: ";
+        int ch; if(!(cin>>ch)) break;
+        if(ch==1){ string f; cout<<"Flight code: "; cin>>f; addFlight(f); }
+        else if(ch==2){ string f,n; cout<<"Flight: "; cin>>f; cout<<"Name: "; cin>>n; reserveTicket(f,n);}
+        else if(ch==3){ string f,n; cout<<"Flight: "; cin>>f; cout<<"Name: "; cin>>n; cancelTicket(f,n);}
+        else if(ch==4){ string f,n; cout<<"Flight: "; cin>>f; cout<<"Name: "; cin>>n; checkReservation(f,n);}
+        else if(ch==5){ string f; cout<<"Flight: "; cin>>f; displayPassengers(f);}
+        else if(ch==6){ displayFlights(); }
+        else break;
+    }
+    return 0;
+}
